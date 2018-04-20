@@ -1,11 +1,11 @@
+// @flow
+
 import React, { Component } from 'react';
+import type { SocrataColumn } from '../../lib/socrata-column';
 
 type Props = {
-    item: {
-        name: string,
-        type: string
-    },
-    clicked: callback
+    item: SocrataColumn,
+    clicked: () => mixed
 };
 
 export class SelectColumn extends Component<Props> {

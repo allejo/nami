@@ -1,36 +1,41 @@
+// @flow
+
 import React, { Component } from 'react';
 import { SelectColumn } from './column';
+import type { SocrataColumn } from '../../lib/socrata-column';
 
-type Props = {};
+type Props = {
+    columns: Array<SocrataColumn>
+};
 
 type State = {
-    columnsSelected: Array<boolean>
+    selectedColumns: Array<boolean>
 };
 
 export class QuerySelect extends Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
-            columnsSelected: Array(this.props.columns.length).fill(false)
+            selectedColumns: Array(this.props.columns.length).fill(false)
         };
     }
 
-    handleClick = i => {
-        const columns = this.state.columnsSelected.slice();
+    handleClick = (i: number) => {
+        const columns = this.state.selectedColumns.slice();
         columns[i] = !columns[i];
 
         this.setState({
-            columnsSelected: columns
+            selectedColumns: columns
         });
     };
 
     render() {
-        let columns = this.props.columns.map((item, index) => (
+        let columns = this.props.columns.map((item: SocrataColumn, index: number) => (
             <SelectColumn
                 key={index}
                 item={item}
-                selected={this.state.columnsSelected[index]}
+                selected={this.state.selectedColumns[index]}
                 clicked={() => this.handleClick(index)}
             />
         ));
