@@ -1,18 +1,20 @@
 // @flow
 
-export interface SocrataDataset {
-    /**
-     * Whether or not this dataset is valid
-     */
-    valid: boolean;
+import Axios from 'axios';
+import type { SocrataDatasetDefinition } from './socrata-dataset-definition';
 
-    /**
-     * The domain for the dataset
-     */
-    host: string;
+export default class SocrataDataset {
+    constructor(definition: SocrataDatasetDefinition) {
+        this.definition = definition;
+    }
 
-    /**
-     * The 4x4 ID for the dataset
-     */
-    resource: string;
+    getMetadata() {
+        if (!this.definition.valid) {
+            throw new Error('Invalid SocrataDatasetDefinition: Cannot fetch metadata.');
+        }
+
+        const url = `https://${this.definition.host}/api/views/metadata/v1/${this.definition.resource}`;
+
+        return Axios.get(url);
+    }
 }

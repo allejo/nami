@@ -54,7 +54,14 @@ export class DatasetSelector extends Component<Props, State> {
     updateDataset = e => {
         e.preventDefault();
 
-        this.props.onDatasetChange(this.primitiveDatasetParser());
+        let dsd = this.primitiveDatasetParser();
+        let ds = new SocrataDataset(dsd);
+
+        ds.getMetadata().then(function(e) {
+            console.log(e.data);
+        });
+
+        this.props.onDatasetChange(dsd);
     };
 
     render() {
