@@ -4,13 +4,13 @@ import React, { Component } from 'react';
 import './App.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import { QuerySelect } from './components/query-select';
-import type { SocrataColumn } from './lib/socrata-column';
-import type { SocrataDataset } from './lib/socrata-dataset';
+import type { SocrataColumnDefinition } from './lib/socrata-column';
+import type { SocrataDatasetDefinition } from './lib/socrata-dataset';
 import { DatasetSelector } from './components/dataset-selector';
 
 type Props = {};
 type State = {
-    dataset: SocrataDataset
+    dataset: SocrataDatasetDefinition
 };
 
 class App extends Component<Props, State> {
@@ -28,7 +28,7 @@ class App extends Component<Props, State> {
         };
     }
 
-    handleNewDataset = (dataset: SocrataDataset) => {
+    handleNewDataset = (dataset: SocrataDatasetDefinition) => {
         if (dataset.valid) {
             this.setState({
                 dataset: dataset
@@ -39,7 +39,7 @@ class App extends Component<Props, State> {
     };
 
     render() {
-        let columns: Array<SocrataColumn> = [
+        let columns: Array<SocrataColumnDefinition> = [
             {
                 name: 'Accessor Book',
                 api_name: 'accessor_book',

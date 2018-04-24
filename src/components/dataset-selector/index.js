@@ -1,7 +1,8 @@
 // @flow
 
 import React, { Component } from 'react';
-import type { SocrataDataset } from '../../lib/socrata-dataset';
+import type { SocrataDatasetDefinition } from '../../lib/socrata-dataset';
+import SocrataDataset from '../../lib/socrata-dataset';
 
 type Props = {
     onDatasetChange: () => mixed
@@ -20,7 +21,7 @@ export class DatasetSelector extends Component<Props, State> {
         };
     }
 
-    primitiveDatasetParser(): SocrataDataset {
+    primitiveDatasetParser(): SocrataDatasetDefinition {
         let url = this.state.url;
         let datasetRegex = /.+\/\/([a-zA-Z.]+)\/.+\/([a-z0-9]{4}-[a-z0-9]{4})/g;
         let matches = datasetRegex.exec(url);

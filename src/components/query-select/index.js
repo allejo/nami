@@ -2,10 +2,10 @@
 
 import React, { Component } from 'react';
 import { SelectColumn } from './column';
-import type { SocrataColumn } from '../../lib/socrata-column';
+import type { SocrataColumnDefinition } from '../../lib/socrata-column';
 
 type Props = {
-    columns: Array<SocrataColumn>
+    columns: Array<SocrataColumnDefinition>
 };
 
 type State = {
@@ -31,7 +31,7 @@ export class QuerySelect extends Component<Props, State> {
     };
 
     render() {
-        let columns = this.props.columns.map((item: SocrataColumn, index: number) => (
+        let columns = this.props.columns.map((item: SocrataColumnDefinition, index: number) => (
             <SelectColumn
                 key={index}
                 item={item}

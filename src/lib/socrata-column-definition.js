@@ -15,7 +15,7 @@ type SocrataColumnType =
     | 'Text'
     | 'Timestamp';
 
-export interface SocrataColumn {
+export interface SocrataColumnDefinition {
     /**
      * The human understandable name for this column
      */
