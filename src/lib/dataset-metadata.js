@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * The structure of the metadata a Socrata's dataset has.
  *
@@ -61,7 +63,6 @@ export interface DatasetMetadata {
 
     /**
      * The title of the asset
-     * @type {[type]}
      */
     name: string;
 

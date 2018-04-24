@@ -2,9 +2,11 @@
 
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import type { SocrataDatasetDefinition } from '../../lib/socrata-dataset';
+import type { MetadataPromise } from '../../lib/socrata-dataset';
 import SocrataDataset from '../../lib/socrata-dataset';
-import moment from "moment";
+import moment from 'moment';
+import type { DatasetMetadata } from '../../lib/dataset-metadata';
+import { SocrataDatasetDefinition } from '../../lib/socrata-dataset-definition';
 
 type Props = {
     onDatasetChange: () => mixed
@@ -12,7 +14,7 @@ type Props = {
 
 type State = {
     url: string,
-    datasetMetadata: Object
+    datasetMetadata: DatasetMetadata
 };
 
 export class DatasetSelector extends Component<Props, State> {
@@ -21,7 +23,7 @@ export class DatasetSelector extends Component<Props, State> {
 
         this.state = {
             url: '',
-            datasetMetadata: {},
+            datasetMetadata: {}
         };
     }
 
@@ -61,11 +63,18 @@ export class DatasetSelector extends Component<Props, State> {
         let dsd = this.primitiveDatasetParser();
         let ds = new SocrataDataset(dsd);
 
-        ds.getMetadata().then(function(e) {
-            this.setState({
-                datasetMetadata: e.data
-            });
-        }.bind(this));
+        ds.getMetadata().then(
+            function(e: MetadataPromise) {
+                this.setState({
+                    datasetMetadata: e.data
+                });
+            }.bind(this)
+        );
+
+        ds.getColumns().then(function(e) {
+            console.log(e);
+            console.log(e.headers['X-SODA2-Types']);
+        });
 
         this.props.onDatasetChange(dsd);
     };
@@ -80,12 +89,20 @@ export class DatasetSelector extends Component<Props, State> {
         return (
             <div>
                 <h2 className="mb-0">{metadata.name}</h2>
-                <small><a href={metadata.webUri} target="_blank">Homepage</a></small>
+                <small>
+                    <a href={metadata.webUri} target="_blank">
+                        Homepage
+                    </a>
+                </small>
 
                 <p className="my-3">{metadata.description}</p>
 
-                <p className="m-0"><strong>License:</strong> {metadata.license}</p>
-                <p className="m-0"><strong>Last Updated:</strong> {moment(metadata.dataUpdatedAt).format('MMMM Do YYYY, h:mm a')}</p>
+                <p className="m-0">
+                    <strong>License:</strong> {metadata.license}
+                </p>
+                <p className="m-0">
+                    <strong>Last Updated:</strong> {moment(metadata.dataUpdatedAt).format('MMMM Do YYYY, h:mm a')}
+                </p>
             </div>
         );
     };
@@ -103,15 +120,19 @@ export class DatasetSelector extends Component<Props, State> {
                             <form onSubmit={this.updateDataset}>
                                 <div className="form-group">
                                     <label htmlFor="url">DataSet URL</label>
-                                    <input type="text" className="form-control" id="url" name="url" onChange={this.handleInputChange} />
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="url"
+                                        name="url"
+                                        onChange={this.handleInputChange}
+                                    />
                                 </div>
 
                                 <input type="submit" className="btn btn-primary" value="Search for Dataset" />
                             </form>
                         </div>
-                        <div className="col-md-6">
-                            {this.renderDatasetPreview()}
-                        </div>
+                        <div className="col-md-6">{this.renderDatasetPreview()}</div>
                     </div>
                 </div>
             </div>
