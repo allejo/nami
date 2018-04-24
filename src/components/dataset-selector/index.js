@@ -1,15 +1,18 @@
 // @flow
 
+import * as _ from 'lodash';
 import React, { Component } from 'react';
 import type { SocrataDatasetDefinition } from '../../lib/socrata-dataset';
 import SocrataDataset from '../../lib/socrata-dataset';
+import moment from "moment";
 
 type Props = {
     onDatasetChange: () => mixed
 };
 
 type State = {
-    url: string
+    url: string,
+    datasetMetadata: Object
 };
 
 export class DatasetSelector extends Component<Props, State> {
@@ -17,7 +20,8 @@ export class DatasetSelector extends Component<Props, State> {
         super(props);
 
         this.state = {
-            url: ''
+            url: '',
+            datasetMetadata: {},
         };
     }
 
@@ -58,10 +62,32 @@ export class DatasetSelector extends Component<Props, State> {
         let ds = new SocrataDataset(dsd);
 
         ds.getMetadata().then(function(e) {
-            console.log(e.data);
-        });
+            this.setState({
+                datasetMetadata: e.data
+            });
+        }.bind(this));
 
         this.props.onDatasetChange(dsd);
+    };
+
+    renderDatasetPreview = () => {
+        let metadata = this.state.datasetMetadata;
+
+        if (_.isEmpty(metadata)) {
+            return '';
+        }
+
+        return (
+            <div>
+                <h2 className="mb-0">{metadata.name}</h2>
+                <small><a href={metadata.webUri} target="_blank">Homepage</a></small>
+
+                <p className="my-3">{metadata.description}</p>
+
+                <p className="m-0"><strong>License:</strong> {metadata.license}</p>
+                <p className="m-0"><strong>Last Updated:</strong> {moment(metadata.dataUpdatedAt).format('MMMM Do YYYY, h:mm a')}</p>
+            </div>
+        );
     };
 
     render() {
@@ -72,12 +98,21 @@ export class DatasetSelector extends Component<Props, State> {
                 </div>
 
                 <div className="card-body">
-                    <form onSubmit={this.updateDataset}>
-                        <label htmlFor="url">DataSet URL</label>
-                        <input type="text" id="url" name="url" onChange={this.handleInputChange} />
+                    <div className="row">
+                        <div className="col-md-6">
+                            <form onSubmit={this.updateDataset}>
+                                <div className="form-group">
+                                    <label htmlFor="url">DataSet URL</label>
+                                    <input type="text" className="form-control" id="url" name="url" onChange={this.handleInputChange} />
+                                </div>
 
-                        <input type="submit" value="Use Dataset" />
-                    </form>
+                                <input type="submit" className="btn btn-primary" value="Search for Dataset" />
+                            </form>
+                        </div>
+                        <div className="col-md-6">
+                            {this.renderDatasetPreview()}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
