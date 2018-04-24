@@ -5,13 +5,12 @@ import './App.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import { QuerySelect } from './components/query-select';
 import type { SocrataColumn } from './lib/socrata-column';
+import type { SocrataDataset } from './lib/socrata-dataset';
+import { DatasetSelector } from './components/dataset-selector';
 
 type Props = {};
 type State = {
-    dataset: {
-        host: string,
-        resource: string
-    }
+    dataset: SocrataDataset
 };
 
 class App extends Component<Props, State> {
@@ -19,12 +18,25 @@ class App extends Component<Props, State> {
         super(props);
 
         this.state = {
+            // Here's a dataset that we can use in testing
+            //   https://data.lacity.org/A-Prosperous-City/Building-and-Safety-Permit-Information/yv23-pmwf
             dataset: {
-                host: 'data.lacity.org',
-                resource: 'yv23-pmwf'
+                host: '',
+                resource: '',
+                valid: false
             }
         };
     }
+
+    handleNewDataset = (dataset: SocrataDataset) => {
+        if (dataset.valid) {
+            this.setState({
+                dataset: dataset
+            });
+        } else {
+            console.error('Invalid dataset given');
+        }
+    };
 
     render() {
         let columns: Array<SocrataColumn> = [
@@ -42,6 +54,7 @@ class App extends Component<Props, State> {
 
         return (
             <div className="container">
+                <DatasetSelector onDatasetChange={this.handleNewDataset} />
                 <QuerySelect columns={columns} />
             </div>
         );
