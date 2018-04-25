@@ -1,6 +1,6 @@
 // @flow
 
-export interface SocrataColumnDefinition {
+export interface ColumnDefinition {
     /**
      * The ID for the column
      */

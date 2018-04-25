@@ -3,15 +3,15 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
-import { QuerySelect } from './components/query-select';
-import type { SocrataColumnDefinition } from './lib/socrata-column-definition';
-import type { SocrataDatasetDefinition } from './lib/socrata-dataset';
 import { DatasetSelector } from './components/dataset-selector';
+import { QuerySelect } from './components/query-select';
+import type { ColumnDefinition } from './lib/socrata/column-definition';
+import type { DatasetDefinition } from './lib/socrata/dataset-definition';
 
 type Props = {};
 type State = {
-    dataset: SocrataDatasetDefinition,
-    columns: Array<SocrataColumnDefinition>
+    dataset: DatasetDefinition,
+    columns: Array<ColumnDefinition>
 };
 
 class App extends Component<Props, State> {
@@ -30,7 +30,7 @@ class App extends Component<Props, State> {
         };
     }
 
-    handleNewDataset = (dataset: SocrataDatasetDefinition) => {
+    handleNewDataset = (dataset: DatasetDefinition) => {
         if (dataset.valid) {
             this.setState({
                 dataset: dataset
@@ -40,7 +40,7 @@ class App extends Component<Props, State> {
         }
     };
 
-    handleNewColumns = (columns: Array<SocrataColumnDefinition>) => {
+    handleNewColumns = (columns: Array<ColumnDefinition>) => {
         this.setState({
             columns: columns
         });
@@ -48,8 +48,16 @@ class App extends Component<Props, State> {
 
     render() {
         return (
-            <div className="container">
-                <DatasetSelector onDatasetChange={this.handleNewDataset} onColumnsChange={this.handleNewColumns} />
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-4">
+                        <DatasetSelector
+                            onDatasetChange={this.handleNewDataset}
+                            onColumnsChange={this.handleNewColumns}
+                        />
+                    </div>
+                    <div className="col-md-8" />
+                </div>
                 <QuerySelect columns={this.state.columns} />
             </div>
         );

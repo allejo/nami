@@ -1,6 +1,6 @@
 // @flow
 
-export interface SocrataDatasetDefinition {
+export interface DatasetDefinition {
     /**
      * Whether or not this dataset is valid
      */

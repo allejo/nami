@@ -2,12 +2,12 @@
 
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import type { MetadataPromise } from '../../lib/socrata-dataset';
-import SocrataDataset from '../../lib/socrata-dataset';
 import moment from 'moment';
-import type { DatasetMetadata } from '../../lib/dataset-metadata';
-import { SocrataDatasetDefinition } from '../../lib/socrata-dataset-definition';
-import type {SocrataColumnDefinition} from "../../lib/socrata-column-definition";
+import { Dataset } from '../../lib/socrata/dataset';
+import { DatasetDefinition } from '../../lib/socrata/dataset-definition';
+import type { DatasetMetadata } from '../../lib/socrata/dataset-metadata';
+import type { MetadataPromise } from '../../lib/socrata/dataset';
+import type { ColumnDefinition } from '../../lib/socrata/column-definition';
 
 type Props = {
     onColumnsChange: () => mixed,
@@ -17,7 +17,7 @@ type Props = {
 type State = {
     url: string,
     datasetMetadata: DatasetMetadata,
-    columns: Array<SocrataColumnDefinition>
+    columns: Array<ColumnDefinition>
 };
 
 export class DatasetSelector extends Component<Props, State> {
@@ -31,7 +31,7 @@ export class DatasetSelector extends Component<Props, State> {
         };
     }
 
-    primitiveDatasetParser(): SocrataDatasetDefinition {
+    primitiveDatasetParser(): DatasetDefinition {
         let url = this.state.url;
         let datasetRegex = /.+\/\/([a-zA-Z.]+)\/.+\/([a-z0-9]{4}-[a-z0-9]{4})/g;
         let matches = datasetRegex.exec(url);
@@ -65,7 +65,7 @@ export class DatasetSelector extends Component<Props, State> {
         e.preventDefault();
 
         let dsd = this.primitiveDatasetParser();
-        let ds = new SocrataDataset(dsd);
+        let ds = new Dataset(dsd);
 
         ds.getMetadata().then(
             function(e: MetadataPromise) {
@@ -75,11 +75,13 @@ export class DatasetSelector extends Component<Props, State> {
             }.bind(this)
         );
 
-        ds.getColumns().then(function(e) {
-            let columns = e.data.columns;
+        ds.getColumns().then(
+            function(e) {
+                let columns = e.data.columns;
 
-            this.props.onColumnsChange(columns);
-        }.bind(this));
+                this.props.onColumnsChange(columns);
+            }.bind(this)
+        );
 
         this.props.onDatasetChange(dsd);
     };
@@ -92,7 +94,7 @@ export class DatasetSelector extends Component<Props, State> {
         }
 
         return (
-            <div>
+            <div className="border-top pt-4 mt-4">
                 <h2 className="mb-0">{metadata.name}</h2>
                 <small>
                     <a href={metadata.webUri} target="_blank">
@@ -120,25 +122,23 @@ export class DatasetSelector extends Component<Props, State> {
                 </div>
 
                 <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-6">
-                            <form onSubmit={this.updateDataset}>
-                                <div className="form-group">
-                                    <label htmlFor="url">DataSet URL</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="url"
-                                        name="url"
-                                        onChange={this.handleInputChange}
-                                    />
-                                </div>
+                    <div>
+                        <form onSubmit={this.updateDataset}>
+                            <div className="form-group">
+                                <label htmlFor="url">DataSet URL</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="url"
+                                    name="url"
+                                    onChange={this.handleInputChange}
+                                />
+                            </div>
 
-                                <input type="submit" className="btn btn-primary" value="Search for Dataset" />
-                            </form>
-                        </div>
-                        <div className="col-md-6">{this.renderDatasetPreview()}</div>
+                            <input type="submit" className="btn btn-primary" value="Search for Dataset" />
+                        </form>
                     </div>
+                    <div>{this.renderDatasetPreview()}</div>
                 </div>
             </div>
         );

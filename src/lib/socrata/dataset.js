@@ -1,15 +1,15 @@
 // @flow
 
 import Axios from 'axios';
-import type { SocrataDatasetDefinition } from './socrata-dataset-definition';
+import type { DatasetDefinition } from './dataset-definition';
 import type { DatasetMetadata } from './dataset-metadata';
 
 export interface MetadataPromise {
     data: DatasetMetadata;
 }
 
-export default class SocrataDataset {
-    constructor(definition: SocrataDatasetDefinition) {
+export class Dataset {
+    constructor(definition: DatasetDefinition) {
         this.definition = definition;
     }
 

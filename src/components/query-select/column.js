@@ -1,10 +1,10 @@
 // @flow
 
 import React, { Component } from 'react';
-import type { SocrataColumnDefinition } from '../../lib/socrata-column-definition';
+import type { ColumnDefinition } from '../../lib/socrata/column-definition';
 
 type Props = {
-    item: SocrataColumnDefinition,
+    item: ColumnDefinition,
     clicked: () => mixed
 };
 
