@@ -81,9 +81,11 @@ export class DatasetSelector extends Component<Props, State> {
                     }.bind(this)
                 );
 
-                ds.getRows(null, 'geojson').then(function (e) {
-                    this.props.onGeoJsonChange(e.data);
-                }.bind(this))
+                ds.getRows(null, 'geojson').then(
+                    function(e) {
+                        this.props.onGeoJsonChange(e.data);
+                    }.bind(this)
+                );
             }.bind(this)
         );
 

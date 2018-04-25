@@ -8,7 +8,7 @@ import { DatasetSelector } from './components/dataset-selector';
 import { QuerySelect } from './components/query-select';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
 import type { DatasetDefinition } from './lib/socrata/dataset-definition';
-import MapPreview from "./components/map-preview";
+import MapPreview from './components/map-preview';
 
 type Props = {};
 type State = {
@@ -49,7 +49,7 @@ class App extends Component<Props, State> {
         });
     };
 
-    handleNewLayer = (geojson) => {
+    handleNewLayer = geojson => {
         this.setState({
             geojson: geojson
         });
