@@ -6,8 +6,7 @@ import moment from 'moment';
 import { Dataset } from '../../lib/socrata/dataset';
 import { DatasetDefinition } from '../../lib/socrata/dataset-definition';
 import type { DatasetMetadata } from '../../lib/socrata/dataset-metadata';
-import type { MetadataPromise } from '../../lib/socrata/dataset';
-import type { ColumnDefinition } from '../../lib/socrata/column-definition';
+import type { ColumnsPromise, MetadataPromise } from '../../lib/socrata/dataset';
 
 type Props = {
     onColumnsChange: () => mixed,
@@ -16,8 +15,7 @@ type Props = {
 
 type State = {
     url: string,
-    datasetMetadata: DatasetMetadata,
-    columns: Array<ColumnDefinition>
+    datasetMetadata: DatasetMetadata
 };
 
 export class DatasetSelector extends Component<Props, State> {
@@ -26,8 +24,7 @@ export class DatasetSelector extends Component<Props, State> {
 
         this.state = {
             url: '',
-            datasetMetadata: {},
-            columns: []
+            datasetMetadata: {}
         };
     }
 
@@ -67,19 +64,21 @@ export class DatasetSelector extends Component<Props, State> {
         let dsd = this.primitiveDatasetParser();
         let ds = new Dataset(dsd);
 
-        ds.getMetadata().then(
-            function(e: MetadataPromise) {
-                this.setState({
-                    datasetMetadata: e.data
-                });
-            }.bind(this)
-        );
+        ds.initDataset().then(
+            function() {
+                ds.getMetadata().then(
+                    function(e: MetadataPromise) {
+                        this.setState({
+                            datasetMetadata: e.data
+                        });
+                    }.bind(this)
+                );
 
-        ds.getColumns().then(
-            function(e) {
-                let columns = e.data.columns;
-
-                this.props.onColumnsChange(columns);
+                ds.getColumns().then(
+                    function(e: ColumnsPromise) {
+                        this.props.onColumnsChange(e.data.columns);
+                    }.bind(this)
+                );
             }.bind(this)
         );
 
