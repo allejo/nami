@@ -2,11 +2,13 @@
 
 import React, { Component } from 'react';
 import './App.css';
+import 'leaflet/dist/leaflet.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import { DatasetSelector } from './components/dataset-selector';
 import { QuerySelect } from './components/query-select';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
 import type { DatasetDefinition } from './lib/socrata/dataset-definition';
+import MapPreview from "./components/map-preview";
 
 type Props = {};
 type State = {
@@ -56,7 +58,9 @@ class App extends Component<Props, State> {
                             onColumnsChange={this.handleNewColumns}
                         />
                     </div>
-                    <div className="col-md-8" />
+                    <div className="col-md-8">
+                        <MapPreview dataset={[]} />
+                    </div>
                 </div>
                 <QuerySelect columns={this.state.columns} />
             </div>
