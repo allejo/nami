@@ -1,33 +1,28 @@
 // @flow
 
-type SocrataColumnType =
-    | 'Checkbox'
-    | 'Double'
-    | 'Line'
-    | 'Location'
-    | 'Money'
-    | 'MultiLine'
-    | 'MultiPoint'
-    | 'MultiPolygon'
-    | 'Number'
-    | 'Point'
-    | 'Polygon'
-    | 'Text'
-    | 'Timestamp';
-
 export interface SocrataColumnDefinition {
+    /**
+     * The ID for the column
+     */
+    id: number;
+
     /**
      * The human understandable name for this column
      */
     name: string;
 
     /**
-     * The column name used in API calls
+     * The data type of the column
      */
-    api_name: string;
+    dataTypeName: string;
 
     /**
-     * The type of column
+     * A description of the column content
      */
-    type: SocrataColumnType;
+    description: string;
+
+    /**
+     * The slugified name of the column used in API calls
+     */
+    fieldName: string;
 }

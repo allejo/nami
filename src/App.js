@@ -4,13 +4,14 @@ import React, { Component } from 'react';
 import './App.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import { QuerySelect } from './components/query-select';
-import type { SocrataColumnDefinition } from './lib/socrata-column';
+import type { SocrataColumnDefinition } from './lib/socrata-column-definition';
 import type { SocrataDatasetDefinition } from './lib/socrata-dataset';
 import { DatasetSelector } from './components/dataset-selector';
 
 type Props = {};
 type State = {
-    dataset: SocrataDatasetDefinition
+    dataset: SocrataDatasetDefinition,
+    columns: Array<SocrataColumnDefinition>
 };
 
 class App extends Component<Props, State> {
@@ -24,7 +25,8 @@ class App extends Component<Props, State> {
                 host: '',
                 resource: '',
                 valid: false
-            }
+            },
+            columns: []
         };
     }
 
@@ -38,24 +40,17 @@ class App extends Component<Props, State> {
         }
     };
 
-    render() {
-        let columns: Array<SocrataColumnDefinition> = [
-            {
-                name: 'Accessor Book',
-                api_name: 'accessor_book',
-                type: 'Text'
-            },
-            {
-                name: 'Tract',
-                api_name: 'tract',
-                type: 'Double'
-            }
-        ];
+    handleNewColumns = (columns: Array<SocrataColumnDefinition>) => {
+        this.setState({
+            columns: columns
+        });
+    };
 
+    render() {
         return (
             <div className="container">
-                <DatasetSelector onDatasetChange={this.handleNewDataset} />
-                <QuerySelect columns={columns} />
+                <DatasetSelector onDatasetChange={this.handleNewDataset} onColumnsChange={this.handleNewColumns} />
+                <QuerySelect columns={this.state.columns} />
             </div>
         );
     }

@@ -7,14 +7,17 @@ import SocrataDataset from '../../lib/socrata-dataset';
 import moment from 'moment';
 import type { DatasetMetadata } from '../../lib/dataset-metadata';
 import { SocrataDatasetDefinition } from '../../lib/socrata-dataset-definition';
+import type {SocrataColumnDefinition} from "../../lib/socrata-column-definition";
 
 type Props = {
+    onColumnsChange: () => mixed,
     onDatasetChange: () => mixed
 };
 
 type State = {
     url: string,
-    datasetMetadata: DatasetMetadata
+    datasetMetadata: DatasetMetadata,
+    columns: Array<SocrataColumnDefinition>
 };
 
 export class DatasetSelector extends Component<Props, State> {
@@ -23,7 +26,8 @@ export class DatasetSelector extends Component<Props, State> {
 
         this.state = {
             url: '',
-            datasetMetadata: {}
+            datasetMetadata: {},
+            columns: []
         };
     }
 
@@ -72,9 +76,10 @@ export class DatasetSelector extends Component<Props, State> {
         );
 
         ds.getColumns().then(function(e) {
-            console.log(e);
-            console.log(e.headers['X-SODA2-Types']);
-        });
+            let columns = e.data.columns;
+
+            this.props.onColumnsChange(columns);
+        }.bind(this));
 
         this.props.onDatasetChange(dsd);
     };

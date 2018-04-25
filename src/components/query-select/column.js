@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import type { SocrataColumnDefinition } from '../../lib/socrata-column';
+import type { SocrataColumnDefinition } from '../../lib/socrata-column-definition';
 
 type Props = {
     item: SocrataColumnDefinition,
@@ -18,8 +18,9 @@ export class SelectColumn extends Component<Props> {
 
                 <div className="col-md">
                     <span>
-                        {this.props.item.name} ({this.props.item.type})
+                        {this.props.item.name} ({this.props.item.dataTypeName})
                     </span>
+                    <p>{this.props.item.description}</p>
                 </div>
             </div>
         );

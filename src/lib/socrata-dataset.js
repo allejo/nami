@@ -28,7 +28,7 @@ export default class SocrataDataset {
             throw new Error('Invalid SocrataDatasetDefinition: Cannot fetch columns.');
         }
 
-        const url = `https://${this.definition.host}/resource/${this.definition.resource}.json?$limit=0`;
+        const url = `https://${this.definition.host}/api/views/${this.definition.resource}.json`;
 
         return Axios.get(url);
     }
