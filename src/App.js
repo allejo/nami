@@ -2,10 +2,12 @@
 
 import React, { Component } from 'react';
 import 'leaflet/dist/leaflet.css';
+import 'react-select/dist/react-select.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import './App.css';
 import DatasetSelector from './components/dataset-selector';
 import MapPreview from './components/map-preview';
+import WhereQuery from './components/where-query-builder';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
 import type { DatasetDefinition } from './lib/socrata/dataset-definition';
 
@@ -64,6 +66,8 @@ class App extends Component<Props, State> {
                             onColumnsChange={this.handleNewColumns}
                             onGeoJsonChange={this.handleNewLayer}
                         />
+
+                        <WhereQuery columns={this.state.columns} />
                     </div>
                     <div className="col-md-8">
                         <MapPreview dataset={this.state.geojson} />

@@ -13,9 +13,9 @@ export default class WhereQueryBuilder {
         let result = '(';
         let firstCond = true;
 
-        this._conditions.forEach(function (value) {
+        this._conditions.forEach(function(value) {
             if (!firstCond) {
-                result += (value.combineWithAnd) ? ' AND ' : ' OR ';
+                result += value.combineWithAnd ? ' AND ' : ' OR ';
             }
 
             result += value.condition.toString();
@@ -28,19 +28,19 @@ export default class WhereQueryBuilder {
         return result;
     }
 
-    where(cond: string|WhereQueryBuilder) {
+    where(cond: string | WhereQueryBuilder) {
         this._conditions = [];
         this.andWhere(cond);
     }
 
-    andWhere(cond: string|WhereQueryBuilder) {
+    andWhere(cond: string | WhereQueryBuilder) {
         this._conditions.push({
             condition: cond,
             combineWithAnd: true
         });
     }
 
-    orWhere(cond: string|WhereQueryBuilder) {
+    orWhere(cond: string | WhereQueryBuilder) {
         this._conditions.push({
             condition: cond,
             combineWithAnd: false
@@ -49,6 +49,6 @@ export default class WhereQueryBuilder {
 }
 
 interface WhereCondition {
-    condition: string|WhereQueryBuilder;
+    condition: string | WhereQueryBuilder;
     combineWithAnd: boolean;
 }

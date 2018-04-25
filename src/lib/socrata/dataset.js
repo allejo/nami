@@ -2,7 +2,7 @@
 
 import * as _ from 'lodash';
 import Axios from 'axios';
-import SoqlBuilder from "../soql/soql-builder";
+import SoqlBuilder from '../soql/soql-builder';
 import type { ColumnDefinition } from './column-definition';
 import type { DatasetDefinition } from './dataset-definition';
 import type { DatasetMetadata } from './dataset-metadata';
@@ -57,7 +57,7 @@ export class Dataset {
         }
 
         const url = `https://${this.definition.host}/resource/${this.definition.resource}.${format}`;
-        const params = (_.isNull(soql)) ? { $limit: 1000 } : soql.getQuery();
+        const params = _.isNull(soql) ? { $limit: 1000 } : soql.getQuery();
 
         return Axios.get(url, {
             params
