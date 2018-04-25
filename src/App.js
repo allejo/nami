@@ -1,9 +1,9 @@
 // @flow
 
 import React, { Component } from 'react';
-import './App.css';
 import 'leaflet/dist/leaflet.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
+import './App.css';
 import { DatasetSelector } from './components/dataset-selector';
 import { QuerySelect } from './components/query-select';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
