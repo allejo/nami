@@ -10,7 +10,8 @@ import type { ColumnsPromise, MetadataPromise } from '../../lib/socrata/dataset'
 
 type Props = {
     onColumnsChange: () => mixed,
-    onDatasetChange: () => mixed
+    onDatasetChange: () => mixed,
+    onGeoJsonChange: () => mixed
 };
 
 type State = {
@@ -79,6 +80,10 @@ export class DatasetSelector extends Component<Props, State> {
                         this.props.onColumnsChange(e.data.columns);
                     }.bind(this)
                 );
+
+                ds.getRows(null, 'geojson').then(function (e) {
+                    this.props.onGeoJsonChange(e.data);
+                }.bind(this))
             }.bind(this)
         );
 

@@ -58,7 +58,7 @@ export class Dataset {
 
         return Axios.get(url, {
             params: {
-                $limit: 1
+                $limit: 1000
             }
         });
     }

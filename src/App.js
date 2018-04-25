@@ -28,7 +28,8 @@ class App extends Component<Props, State> {
                 resource: '',
                 valid: false
             },
-            columns: []
+            columns: [],
+            geojson: {}
         };
     }
 
@@ -48,6 +49,12 @@ class App extends Component<Props, State> {
         });
     };
 
+    handleNewLayer = (geojson) => {
+        this.setState({
+            geojson: geojson
+        });
+    };
+
     render() {
         return (
             <div className="container-fluid">
@@ -56,10 +63,11 @@ class App extends Component<Props, State> {
                         <DatasetSelector
                             onDatasetChange={this.handleNewDataset}
                             onColumnsChange={this.handleNewColumns}
+                            onGeoJsonChange={this.handleNewLayer}
                         />
                     </div>
                     <div className="col-md-8">
-                        <MapPreview dataset={[]} />
+                        <MapPreview dataset={this.state.geojson} />
                     </div>
                 </div>
                 <QuerySelect columns={this.state.columns} />
