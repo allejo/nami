@@ -4,11 +4,10 @@ import React, { Component } from 'react';
 import 'leaflet/dist/leaflet.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import './App.css';
-import { DatasetSelector } from './components/dataset-selector';
-import { QuerySelect } from './components/query-select';
+import DatasetSelector from './components/dataset-selector';
+import MapPreview from './components/map-preview';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
 import type { DatasetDefinition } from './lib/socrata/dataset-definition';
-import MapPreview from './components/map-preview';
 
 type Props = {};
 type State = {
@@ -70,7 +69,6 @@ class App extends Component<Props, State> {
                         <MapPreview dataset={this.state.geojson} />
                     </div>
                 </div>
-                <QuerySelect columns={this.state.columns} />
             </div>
         );
     }

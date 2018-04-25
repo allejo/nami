@@ -19,7 +19,7 @@ type State = {
     datasetMetadata: DatasetMetadata
 };
 
-export class DatasetSelector extends Component<Props, State> {
+export default class DatasetSelector extends Component<Props, State> {
     constructor(props) {
         super(props);
 
