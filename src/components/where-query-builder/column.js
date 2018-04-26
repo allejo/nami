@@ -100,9 +100,9 @@ export default class WhereCondition extends Component<Props, State> {
         });
     };
 
-    handleValueChange = value => {
+    handleValueChange = e => {
         this.setState({
-            value: value
+            value: e.target.value
         });
     };
 
