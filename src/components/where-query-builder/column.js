@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
+import type { IWhereCondition } from "../../lib/query-builder/IWhereCondition";
 
 type SoqlOperator = {
     literal: '',
@@ -68,16 +69,11 @@ const SoqlOperators: Array<SoqlOperator> = [
 ];
 
 type Props = {
-    columns: Array<ColumnDefinition>
+    columns: Array<ColumnDefinition>,
+    onConditionReady: () => mixed
 };
 
-type State = {
-    column?: ColumnDefinition,
-    operator?: SoqlOperator,
-    value: any
-};
-
-export default class WhereCondition extends Component<Props, State> {
+export default class WhereCondition extends Component<Props, IWhereCondition> {
     constructor(props) {
         super(props);
 
@@ -92,18 +88,40 @@ export default class WhereCondition extends Component<Props, State> {
         this.setState({
             column: selection
         });
+
+        this._maybeSubmitReady();
     };
 
     handleOperatorChange = (selection: SoqlOperator) => {
         this.setState({
             operator: selection
         });
+
+        this._maybeSubmitReady();
     };
 
     handleValueChange = e => {
         this.setState({
             value: e.target.value
         });
+
+        this._maybeSubmitReady();
+    };
+
+    _maybeSubmitReady = () => {
+        let condition = this.state;
+
+        if (condition.column === null || condition.operator === null) {
+            return false;
+        }
+
+        if (condition.value && condition.value.length === 0 && condition.operator.supportedFieldCount > 0) {
+            return false;
+        }
+
+        this.props.onConditionReady(condition);
+
+        return true;
     };
 
     _getOperatorsToDisplay = () => {
@@ -150,7 +168,7 @@ export default class WhereCondition extends Component<Props, State> {
                     </div>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group mb-0">
                     <input
                         type="text"
                         className="form-control"

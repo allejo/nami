@@ -10,11 +10,14 @@ import MapPreview from './components/map-preview';
 import WhereQuery from './components/where-query-builder';
 import type { ColumnDefinition } from './lib/socrata/column-definition';
 import type { DatasetDefinition } from './lib/socrata/dataset-definition';
+import type { IWhereCondition } from "./lib/query-builder/IWhereCondition";
 
 type Props = {};
 type State = {
     dataset: DatasetDefinition,
-    columns: Array<ColumnDefinition>
+    query: { conditions: Array<IWhereCondition> },
+    columns: Array<ColumnDefinition>,
+    geojson: Object
 };
 
 class App extends Component<Props, State> {
@@ -28,6 +31,9 @@ class App extends Component<Props, State> {
                 host: '',
                 resource: '',
                 valid: false
+            },
+            query: {
+                conditions: []
             },
             columns: [],
             geojson: {}
@@ -56,6 +62,10 @@ class App extends Component<Props, State> {
         });
     };
 
+    handleNewWhereFilter = (conditions: Array<IWhereCondition>) => {
+        console.log('@todo apply where filter');
+    }
+
     render() {
         return (
             <div className="container-fluid">
@@ -67,7 +77,7 @@ class App extends Component<Props, State> {
                             onGeoJsonChange={this.handleNewLayer}
                         />
 
-                        <WhereQuery columns={this.state.columns} />
+                        <WhereQuery columns={this.state.columns} onNewFilter={this.handleNewWhereFilter} />
                     </div>
                     <div className="col-md-8">
                         <MapPreview dataset={this.state.geojson} />
