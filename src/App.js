@@ -31,7 +31,7 @@ type State = {
     },
     query: { conditions: Array<IWhereCondition> },
     columns: Array<ColumnDefinition>,
-    geojson: Object,
+    geoJsonLayers: Array<Object>,
     error: boolean
 };
 
@@ -52,7 +52,7 @@ export default class App extends Component<Props, State> {
                 conditions: []
             },
             columns: [],
-            geojson: {},
+            geoJsonLayers: [],
             error: false
         };
     }
@@ -85,6 +85,7 @@ export default class App extends Component<Props, State> {
     };
 
     _fetchGeoJsonLayer = () => {
+        let layers = this.state.geojson;
         let dataset = this.state.dataset.object;
         let soql = this.state.soql;
 
@@ -92,15 +93,17 @@ export default class App extends Component<Props, State> {
 
         dataset.getRows(soql, 'geojson').then(
             function(e) {
+                layers = [e];
+
                 this.setState({
-                    geojson: e.data
+                    geoJsonLayers: layers
                 });
             }.bind(this)
         );
     };
 
     handleNewWhereFilter = (conditions: Array<IWhereCondition>) => {
-        let soql = this.state.soql;
+        let soql = new SoqlBuilder();
 
         conditions.forEach(function(condition: IWhereCondition) {
             soql.andWhere(
@@ -135,7 +138,7 @@ export default class App extends Component<Props, State> {
                         <WhereQuery columns={this.state.columns} onNewFilter={this.handleNewWhereFilter} />
                     </div>
                     <div className="col-md-8">
-                        <MapPreview dataset={this.state.geojson} />
+                        <MapPreview geoJSON={this.state.geoJsonLayers} />
                     </div>
                 </div>
             </div>
