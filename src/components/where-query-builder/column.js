@@ -85,27 +85,36 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
     }
 
     handleColumnChange = (selection: ColumnDefinition) => {
-        this.setState({
-            column: selection
-        });
-
-        this._maybeSubmitReady();
+        this.setState(
+            {
+                column: selection
+            },
+            () => {
+                this._maybeSubmitReady();
+            }
+        );
     };
 
     handleOperatorChange = (selection: SoqlOperator) => {
-        this.setState({
-            operator: selection
-        });
-
-        this._maybeSubmitReady();
+        this.setState(
+            {
+                operator: selection
+            },
+            () => {
+                this._maybeSubmitReady();
+            }
+        );
     };
 
     handleValueChange = e => {
-        this.setState({
-            value: e.target.value
-        });
-
-        this._maybeSubmitReady();
+        this.setState(
+            {
+                value: e.target.value
+            },
+            () => {
+                this._maybeSubmitReady();
+            }
+        );
     };
 
     _maybeSubmitReady = () => {

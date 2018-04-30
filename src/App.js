@@ -47,6 +47,7 @@ export default class App extends Component<Props, State> {
                 object: {},
                 metadata: {}
             },
+            soql: new SoqlBuilder(),
             query: {
                 conditions: []
             },
@@ -85,11 +86,11 @@ export default class App extends Component<Props, State> {
 
     _fetchGeoJsonLayer = () => {
         let dataset = this.state.dataset.object;
-        let query = new SoqlBuilder();
+        let soql = this.state.soql;
 
-        query.limit(1000);
+        soql.limit(1000);
 
-        dataset.getRows(query, 'geojson').then(
+        dataset.getRows(soql, 'geojson').then(
             function(e) {
                 this.setState({
                     geojson: e.data
@@ -99,7 +100,22 @@ export default class App extends Component<Props, State> {
     };
 
     handleNewWhereFilter = (conditions: Array<IWhereCondition>) => {
-        console.log('@todo apply where filter');
+        let soql = this.state.soql;
+
+        conditions.forEach(function(condition: IWhereCondition) {
+            soql.andWhere(
+                `${condition.column.value.fieldName} ${condition.operator.value.literal} "${condition.value}"`
+            );
+        });
+
+        this.setState(
+            {
+                soql: soql
+            },
+            () => {
+                this._fetchGeoJsonLayer();
+            }
+        );
     };
 
     render() {
