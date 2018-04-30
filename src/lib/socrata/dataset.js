@@ -19,21 +19,46 @@ export interface ColumnsPromise {
     };
 }
 
+/**
+ * A class representation of a Socrata dataset.
+ */
 export class Dataset {
     constructor(definition: DatasetDefinition) {
         this.definition = definition;
     }
 
+    /**
+     * Initialize the dataset object to be ready for use.
+     *
+     * This method will analyze the given dataset and check its backend. If it's using the old 2.0 backend, then it will
+     * be updated to use the 2.1 backend.
+     *
+     * @returns {Promise<void>}
+     */
     async initDataset() {
+        if (!this.definition.valid) {
+            throw new Error('Invalid Dataset URL: Cannot initialize dataset.');
+        }
+
+        // An undocumented API endpoint used by Socrata's Foundry websites to check a dataset's backend status. Please
+        // don't break me, Socrata <3
+        //
+        //   e.g. https://data.lacity.org/api/migrations/75vw-v4fk.json
+
         const url = `https://${this.definition.host}/api/migrations/${this.definition.resource}.json`;
         const response = await Axios.get(url);
 
         this.definition.resource = response.data.nbeId;
     }
 
+    /**
+     * Get the metadata belonging to this dataset.
+     *
+     * @returns {AxiosPromise<MetadataPromise>}
+     */
     getMetadata(): Promise<MetadataPromise> {
         if (!this.definition.valid) {
-            throw new Error('Invalid DatasetDefinition: Cannot fetch metadata.');
+            throw new Error('Invalid Dataset URL: Cannot fetch metadata.');
         }
 
         const url = `https://${this.definition.host}/api/views/metadata/v1/${this.definition.resource}`;
@@ -41,19 +66,35 @@ export class Dataset {
         return Axios.get(url);
     }
 
+    /**
+     * Get a dataset's column structure.
+     *
+     * @returns {AxiosPromise<ColumnsPromise>}
+     */
     getColumns(): Promise<ColumnsPromise> {
         if (!this.definition.valid) {
-            throw new Error('Invalid DatasetDefinition: Cannot fetch columns.');
+            throw new Error('Invalid Dataset URL: Cannot fetch columns.');
         }
+
+        // An older (maybe deprecated?) and now undocumented API endpoint that used for a dataset's metadata. This
+        // endpoint will return the columns structure whereas the new "official" endpoint doesn't.
 
         const url = `https://${this.definition.host}/api/views/${this.definition.resource}.json`;
 
         return Axios.get(url);
     }
 
+    /**
+     * Get the dataset's rows.
+     *
+     * @param soql
+     * @param format
+     *
+     * @returns {AxiosPromise<any>}
+     */
     getRows(soql: SoqlBuilder = null, format: ResourceFormat = 'json'): Promise {
         if (!this.definition.valid) {
-            throw new Error('Invalid DatasetDefinition: Cannot fetch rows.');
+            throw new Error('Invalid Dataset URL: Cannot fetch rows.');
         }
 
         const url = `https://${this.definition.host}/resource/${this.definition.resource}.${format}`;
