@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import WhereCondition from './column';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
-import type { IWhereCondition } from "../../lib/query-builder/IWhereCondition";
+import type { IWhereCondition } from '../../lib/query-builder/IWhereCondition';
 
 type Props = {
     columns: Array<ColumnDefinition>,
@@ -25,14 +25,14 @@ export default class WhereQuery extends Component<Props, State> {
         };
     }
 
-    handleConditionReady = (condition) => {
+    handleConditionReady = condition => {
         let conditions = this.state.conditions.splice();
         conditions.push(condition);
 
         this.setState({
             conditions: conditions
         });
-    }
+    };
 
     doApplyFilter = () => {
         this.props.onNewFilter(this.state.conditions);
@@ -50,7 +50,9 @@ export default class WhereQuery extends Component<Props, State> {
                 </div>
 
                 <div className="card-footer">
-                    <button className="btn btn-primary" onClick={this.doApplyFilter}>Apply Filter</button>
+                    <button className="btn btn-primary" onClick={this.doApplyFilter}>
+                        Apply Filter
+                    </button>
                 </div>
             </div>
         );

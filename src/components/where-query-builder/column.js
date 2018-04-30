@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
-import type { IWhereCondition } from "../../lib/query-builder/IWhereCondition";
+import type { IWhereCondition } from '../../lib/query-builder/IWhereCondition';
 
 type SoqlOperator = {
     literal: '',
