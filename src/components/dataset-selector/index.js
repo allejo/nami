@@ -2,21 +2,25 @@
 
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import moment from 'moment';
+import AlertMessage from '../alert-message';
 import { Dataset } from '../../lib/socrata/dataset';
 import { DatasetDefinition } from '../../lib/socrata/dataset-definition';
 import type { DatasetMetadata } from '../../lib/socrata/dataset-metadata';
-import type { ColumnsPromise, MetadataPromise } from '../../lib/socrata/dataset';
+import type { MetadataPromise } from '../../lib/socrata/dataset';
+import type { IAlertMessage } from '../../lib/IAlertMessage';
 
 type Props = {
     onColumnsChange: () => mixed,
     onDatasetChange: () => mixed,
+    onDatasetUpdate: () => mixed,
+    onDatasetError: () => mixed,
     onGeoJsonChange: () => mixed
 };
 
 type State = {
     url: string,
-    datasetMetadata: DatasetMetadata
+    datasetMetadata: DatasetMetadata,
+    errorMessage: IAlertMessage
 };
 
 export default class DatasetSelector extends Component<Props, State> {
@@ -25,11 +29,12 @@ export default class DatasetSelector extends Component<Props, State> {
 
         this.state = {
             url: '',
-            datasetMetadata: {}
+            datasetMetadata: {},
+            errorMessage: {}
         };
     }
 
-    primitiveDatasetParser(): DatasetDefinition {
+    _guessDataset(): DatasetDefinition {
         let url = this.state.url;
         let datasetRegex = /.+\/\/([a-zA-Z.]+)\/.+\/([a-z0-9]{4}-[a-z0-9]{4})/g;
         let matches = datasetRegex.exec(url);
@@ -59,65 +64,47 @@ export default class DatasetSelector extends Component<Props, State> {
         });
     };
 
-    updateDataset = e => {
-        e.preventDefault();
-
-        let dsd = this.primitiveDatasetParser();
-        let ds = new Dataset(dsd);
-
-        ds.initDataset().then(
-            function() {
-                ds.getMetadata().then(
-                    function(e: MetadataPromise) {
-                        this.setState({
-                            datasetMetadata: e.data
-                        });
-                    }.bind(this)
-                );
-
-                ds.getColumns().then(
-                    function(e: ColumnsPromise) {
-                        this.props.onColumnsChange(e.data.columns);
-                    }.bind(this)
-                );
-
-                ds.getRows(null, 'geojson').then(
-                    function(e) {
-                        this.props.onGeoJsonChange(e.data);
-                    }.bind(this)
-                );
-            }.bind(this)
-        );
-
-        this.props.onDatasetChange(dsd);
+    handleDatasetError = (e: IAlertMessage) => {
+        this.setState({
+            errorMessage: e
+        });
     };
 
-    renderDatasetPreview = () => {
-        let metadata = this.state.datasetMetadata;
+    triggerDatasetUpdate = e => {
+        e.preventDefault();
 
-        if (_.isEmpty(metadata)) {
-            return '';
-        }
+        let fourByFour = this._guessDataset();
+        let ds = new Dataset(fourByFour);
 
-        return (
-            <div className="border-top pt-4 mt-4">
-                <h2 className="mb-0">{metadata.name}</h2>
-                <small>
-                    <a href={metadata.webUri} target="_blank">
-                        Homepage
-                    </a>
-                </small>
+        ds
+            .initDataset()
+            .then(
+                function() {
+                    // We've got a valid dataset, so let's clear out our error state
+                    this.setState({
+                        errorMessage: {}
+                    });
 
-                <p className="my-3">{metadata.description}</p>
-
-                <p className="m-0">
-                    <strong>License:</strong> {metadata.license}
-                </p>
-                <p className="m-0">
-                    <strong>Last Updated:</strong> {moment(metadata.dataUpdatedAt).format('MMMM Do YYYY, h:mm a')}
-                </p>
-            </div>
-        );
+                    // Let's fetch the dataset's metadata
+                    ds.getMetadata().then(
+                        function(e: MetadataPromise) {
+                            this.props.onDatasetUpdate({
+                                definition: fourByFour,
+                                object: ds,
+                                metadata: e.data
+                            });
+                        }.bind(this)
+                    );
+                }.bind(this)
+            )
+            .catch(
+                function(e) {
+                    this.handleDatasetError({
+                        type: 'Danger',
+                        message: e.message
+                    });
+                }.bind(this)
+            );
     };
 
     render() {
@@ -128,8 +115,9 @@ export default class DatasetSelector extends Component<Props, State> {
                 </div>
 
                 <div className="card-body">
+                    {!_.isEmpty(this.state.errorMessage) && <AlertMessage error={this.state.errorMessage} />}
                     <div>
-                        <form onSubmit={this.updateDataset}>
+                        <form onSubmit={this.triggerDatasetUpdate}>
                             <div className="form-group">
                                 <label htmlFor="url">DataSet URL</label>
                                 <input
@@ -144,7 +132,6 @@ export default class DatasetSelector extends Component<Props, State> {
                             <input type="submit" className="btn btn-primary" value="Search for Dataset" />
                         </form>
                     </div>
-                    <div>{this.renderDatasetPreview()}</div>
                 </div>
             </div>
         );
