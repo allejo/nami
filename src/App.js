@@ -132,10 +132,11 @@ export default class App extends Component<Props, State> {
                         />
 
                         {!_.isEmpty(this.state.dataset.metadata) && (
-                            <DatasetPreview metadata={this.state.dataset.metadata} />
+                            <div>
+                                <DatasetPreview metadata={this.state.dataset.metadata} />
+                                <WhereQuery columns={this.state.columns} onNewFilter={this.handleNewWhereFilter} />
+                            </div>
                         )}
-
-                        <WhereQuery columns={this.state.columns} onNewFilter={this.handleNewWhereFilter} />
                     </div>
                     <div className="col-md-8">
                         <MapPreview geoJSON={this.state.geoJsonLayers} />
