@@ -107,7 +107,7 @@ export default class App extends Component<Props, State> {
 
         conditions.forEach(function(condition: IWhereCondition) {
             soql.andWhere(
-                `${condition.column.value.fieldName} ${condition.operator.value.literal} "${condition.value}"`
+                `${condition.column.value.fieldName} ${condition.operator.value.literal} "${condition.value.field}"`
             );
         });
 
@@ -134,7 +134,11 @@ export default class App extends Component<Props, State> {
                         {!_.isEmpty(this.state.dataset.metadata) && (
                             <div>
                                 <DatasetPreview metadata={this.state.dataset.metadata} />
-                                <WhereQuery columns={this.state.columns} onNewFilter={this.handleNewWhereFilter} />
+                                <WhereQuery
+                                    columns={this.state.columns}
+                                    dataset={this.state.dataset.object}
+                                    onNewFilter={this.handleNewWhereFilter}
+                                />
                             </div>
                         )}
                     </div>

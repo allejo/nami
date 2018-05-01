@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
 import type { IWhereCondition } from '../../lib/query-builder/IWhereCondition';
+import SoqlBuilder from '../../lib/soql/soql-builder';
+import { Dataset } from '../../lib/socrata/dataset';
 
 type SoqlOperator = {
     literal: '',
@@ -69,6 +71,7 @@ const SoqlOperators: Array<SoqlOperator> = [
 ];
 
 type Props = {
+    dataset: Dataset,
     columns: Array<ColumnDefinition>,
     onConditionReady: () => mixed
 };
@@ -109,7 +112,7 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
     handleValueChange = e => {
         this.setState(
             {
-                value: e.target.value
+                value: e
             },
             () => {
                 this._maybeSubmitReady();
@@ -154,6 +157,26 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
         return operatorsToDisplay;
     };
 
+    _getColumnValues = () => {
+        let dataset = this.props.dataset;
+        let field = this.state.column.value.fieldName;
+        let soql = new SoqlBuilder();
+
+        soql
+            .select({
+                field: field
+            })
+            .where(`${field} IS NOT NULL`)
+            .groupBy(field)
+            .orderBy('field');
+
+        return dataset.getRows(soql, 'json').then(function(json) {
+            return {
+                options: json.data
+            };
+        });
+    };
+
     render() {
         const columns = this.props.columns.map(function(value) {
             return {
@@ -177,15 +200,19 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
                     </div>
                 </div>
 
-                <div className="form-group mb-0">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Column value..."
-                        value={this.state.value}
-                        onChange={this.handleValueChange}
-                    />
-                </div>
+                {this.state.column && (
+                    <div className="form-group mb-0">
+                        <Select.AsyncCreatable
+                            multi={false}
+                            value={this.state.value}
+                            onChange={this.handleValueChange}
+                            valueKey="id"
+                            labelKey="field"
+                            loadOptions={this._getColumnValues}
+                            backspaceRemoves={true}
+                        />
+                    </div>
+                )}
             </div>
         );
     }

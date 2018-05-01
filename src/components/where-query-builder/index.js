@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import WhereCondition from './column';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
 import type { IWhereCondition } from '../../lib/query-builder/IWhereCondition';
+import { Dataset } from '../../lib/socrata/dataset';
 
 type Props = {
+    dataset: Dataset,
     columns: Array<ColumnDefinition>,
     onNewFilter: () => mixed
 };
@@ -46,7 +48,11 @@ export default class WhereQuery extends Component<Props, State> {
                 </div>
 
                 <div className="card-body">
-                    <WhereCondition columns={this.props.columns} onConditionReady={this.handleConditionReady} />
+                    <WhereCondition
+                        columns={this.props.columns}
+                        dataset={this.props.dataset}
+                        onConditionReady={this.handleConditionReady}
+                    />
                 </div>
 
                 <div className="card-footer">
