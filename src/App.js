@@ -9,6 +9,8 @@ import './App.css';
 import { Dataset } from './lib/socrata/dataset';
 import SoqlBuilder from './lib/soql/soql-builder';
 
+import Footer from './layout/footer';
+
 import DatasetSelector from './components/dataset-selector';
 import DatasetPreview from './components/dataset-preview';
 import PopupEditor from './components/popup-editor';
@@ -150,6 +152,8 @@ export default class App extends Component<Props, State> {
                                 />
                             </div>
                         )}
+
+                        <Footer />
                     </div>
                     <div className="col-md-8">
                         <MapPreview geoJSON={this.state.geoJsonLayers} popupTemplate={this.state.popupTemplate} />
