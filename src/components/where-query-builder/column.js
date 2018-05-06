@@ -1,6 +1,4 @@
-// @flow
-
-import * as _ from 'lodash';
+import forEach from 'lodash.foreach';
 import React, { Component } from 'react';
 import Select from 'react-select';
 import type { ColumnDefinition } from '../../lib/socrata/column-definition';
@@ -140,7 +138,7 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
         const col = this.state.column;
         let operatorsToDisplay = [];
 
-        _.each(SoqlOperators, function(operator: SoqlOperator) {
+        forEach(SoqlOperators, function(operator: SoqlOperator) {
             const def = {
                 label: operator.literal,
                 value: operator

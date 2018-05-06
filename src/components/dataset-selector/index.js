@@ -1,6 +1,4 @@
-// @flow
-
-import * as _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 import React, { Component } from 'react';
 import AlertMessage from '../alert-message';
 import { Dataset } from '../../lib/socrata/dataset';
@@ -115,7 +113,7 @@ export default class DatasetSelector extends Component<Props, State> {
                 </div>
 
                 <div className="card-body">
-                    {!_.isEmpty(this.state.errorMessage) && <AlertMessage error={this.state.errorMessage} />}
+                    {!isEmpty(this.state.errorMessage) && <AlertMessage error={this.state.errorMessage} />}
                     <div>
                         <form onSubmit={this.triggerDatasetUpdate}>
                             <div className="form-group">

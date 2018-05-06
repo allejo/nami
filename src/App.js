@@ -1,6 +1,4 @@
-// @flow
-
-import * as _ from 'lodash';
+import isEmpty from 'lodash.isempty';
 import React, { Component } from 'react';
 
 import 'leaflet/dist/leaflet.css';
@@ -139,7 +137,7 @@ export default class App extends Component<Props, State> {
                             onDatasetUpdate={this.handleDatasetUpdate}
                         />
 
-                        {!_.isEmpty(this.state.dataset.metadata) && (
+                        {!isEmpty(this.state.dataset.metadata) && (
                             <div>
                                 <DatasetPreview metadata={this.state.dataset.metadata} />
 

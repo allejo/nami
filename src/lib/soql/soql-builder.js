@@ -1,4 +1,6 @@
-import * as _ from 'lodash';
+import forEach from 'lodash.foreach';
+import isObject from 'lodash.isobject';
+import isString from 'lodash.isstring';
 import WhereQueryBuilder from './where-query-builder';
 
 export default class SoqlBuilder {
@@ -18,7 +20,7 @@ export default class SoqlBuilder {
     getQuery() {
         let selects = this.query.select;
 
-        _.each(this.query.selectAlias, function(value) {
+        forEach(this.query.selectAlias, function(value) {
             selects.push(`${value.column} AS ${value.alias}`);
         });
 
@@ -34,12 +36,12 @@ export default class SoqlBuilder {
     }
 
     select(column: Array<string> | string | Object) {
-        if (_.isArray(column)) {
+        if (Array.isArray(column)) {
             this.query.select.push(...column);
-        } else if (_.isString(column)) {
+        } else if (isString(column)) {
             this.query.select.push(column);
-        } else if (_.isObject(column)) {
-            _.each(
+        } else if (isObject(column)) {
+            forEach(
                 column,
                 function(value, key) {
                     this.query.selectAlias.push({
@@ -90,9 +92,9 @@ export default class SoqlBuilder {
     }
 
     orderBy(column: Array<string> | string) {
-        if (_.isArray(column)) {
+        if (Array.isArray(column)) {
             this.query.order.push(...column);
-        } else if (_.isString(column)) {
+        } else if (isString(column)) {
             this.query.order.push(column);
         }
 
@@ -100,9 +102,9 @@ export default class SoqlBuilder {
     }
 
     groupBy(column: Array<string> | string) {
-        if (_.isArray(column)) {
+        if (Array.isArray(column)) {
             this.query.group.push(...column);
-        } else if (_.isString(column)) {
+        } else if (isString(column)) {
             this.query.group.push(column);
         }
 

@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
 import L from 'leaflet';
+import isEmpty from 'lodash.isempty';
 import React, { Component } from 'react';
 import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
@@ -63,7 +63,7 @@ export default class MapPreview extends Component<Props> {
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
 
-                {!_.isEmpty(layers) && layers}
+                {!isEmpty(layers) && layers}
             </Map>
         );
     }
