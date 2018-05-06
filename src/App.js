@@ -131,7 +131,7 @@ export default class App extends Component<Props, State> {
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-4 scrollable viewport-height">
                         <DatasetSelector
                             onDatasetError={this.handleDatasetError}
                             onDatasetUpdate={this.handleDatasetUpdate}
