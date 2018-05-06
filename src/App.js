@@ -13,6 +13,7 @@ import SoqlBuilder from './lib/soql/soql-builder';
 
 import DatasetSelector from './components/dataset-selector';
 import DatasetPreview from './components/dataset-preview';
+import PopupEditor from './components/popup-editor';
 import WhereQuery from './components/where-query-builder';
 import MapPreview from './components/map-preview';
 
@@ -32,6 +33,7 @@ type State = {
     query: { conditions: Array<IWhereCondition> },
     columns: Array<ColumnDefinition>,
     geoJsonLayers: Array<Object>,
+    popupTemplate: string,
     error: boolean
 };
 
@@ -102,6 +104,12 @@ export default class App extends Component<Props, State> {
         );
     };
 
+    handlePopupUpdate = (template: string) => {
+        this.setState({
+            popupTemplate: template
+        });
+    };
+
     handleNewWhereFilter = (conditions: Array<IWhereCondition>) => {
         let soql = new SoqlBuilder();
 
@@ -134,6 +142,9 @@ export default class App extends Component<Props, State> {
                         {!_.isEmpty(this.state.dataset.metadata) && (
                             <div>
                                 <DatasetPreview metadata={this.state.dataset.metadata} />
+
+                                <PopupEditor columns={this.state.columns} onPopupUpdate={this.handlePopupUpdate} />
+
                                 <WhereQuery
                                     columns={this.state.columns}
                                     dataset={this.state.dataset.object}
@@ -143,7 +154,7 @@ export default class App extends Component<Props, State> {
                         )}
                     </div>
                     <div className="col-md-8">
-                        <MapPreview geoJSON={this.state.geoJsonLayers} />
+                        <MapPreview geoJSON={this.state.geoJsonLayers} popupTemplate={this.state.popupTemplate} />
                     </div>
                 </div>
             </div>
