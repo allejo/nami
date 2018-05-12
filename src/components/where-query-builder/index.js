@@ -36,6 +36,14 @@ export default class WhereQuery extends Component<Props, State> {
         });
     };
 
+    handleClearCondition = () => {
+        this.setState({
+            conditions: []
+        });
+
+        this.props.onNewFilter([]);
+    };
+
     doApplyFilter = () => {
         this.props.onNewFilter(this.state.conditions);
     };
@@ -52,6 +60,7 @@ export default class WhereQuery extends Component<Props, State> {
                         columns={this.props.columns}
                         dataset={this.props.dataset}
                         onConditionReady={this.handleConditionReady}
+                        onClearCondition={this.handleClearCondition}
                     />
                 </div>
 

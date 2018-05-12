@@ -71,7 +71,8 @@ const SoqlOperators: Array<SoqlOperator> = [
 type Props = {
     dataset: Dataset,
     columns: Array<ColumnDefinition>,
-    onConditionReady: () => mixed
+    onConditionReady: () => mixed,
+    onClearCondition: () => mixed
 };
 
 export default class WhereCondition extends Component<Props, IWhereCondition> {
@@ -114,6 +115,19 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
             },
             () => {
                 this._maybeSubmitReady();
+            }
+        );
+    };
+
+    handleClearAll = () => {
+        this.setState(
+            {
+                column: null,
+                operator: null,
+                value: ''
+            },
+            () => {
+                this.props.onClearCondition();
             }
         );
     };
@@ -184,33 +198,38 @@ export default class WhereCondition extends Component<Props, IWhereCondition> {
         });
 
         return (
-            <div>
-                <div className="row mb-3">
-                    <div className="col-sm-9">
-                        <Select options={columns} onChange={this.handleColumnChange} value={this.state.column} />
+            <div className="d-flex align-items-center">
+                <div className="w-100">
+                    <div className="row">
+                        <div className="col-sm-9">
+                            <Select options={columns} onChange={this.handleColumnChange} value={this.state.column} />
+                        </div>
+                        <div className="col-sm-3 pl-0">
+                            <Select
+                                options={this._getOperatorsToDisplay()}
+                                onChange={this.handleOperatorChange}
+                                value={this.state.operator}
+                            />
+                        </div>
                     </div>
-                    <div className="col-sm-3">
-                        <Select
-                            options={this._getOperatorsToDisplay()}
-                            onChange={this.handleOperatorChange}
-                            value={this.state.operator}
-                        />
-                    </div>
-                </div>
 
-                {this.state.column && (
-                    <div className="form-group mb-0">
-                        <Select.AsyncCreatable
-                            multi={false}
-                            value={this.state.value}
-                            onChange={this.handleValueChange}
-                            valueKey="id"
-                            labelKey="field"
-                            loadOptions={this._getColumnValues}
-                            backspaceRemoves={true}
-                        />
-                    </div>
-                )}
+                    {this.state.column && (
+                        <div className="form-group mt-3 mb-0">
+                            <Select.AsyncCreatable
+                                multi={false}
+                                value={this.state.value}
+                                onChange={this.handleValueChange}
+                                valueKey="id"
+                                labelKey="field"
+                                loadOptions={this._getColumnValues}
+                                backspaceRemoves={true}
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className="text-danger pl-2" title="Clear filter">
+                    <i className="fe fe-x" aria-hidden="false" onClick={this.handleClearAll} />
+                </div>
             </div>
         );
     }
