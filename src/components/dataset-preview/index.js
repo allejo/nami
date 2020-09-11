@@ -19,7 +19,7 @@ export default class DatasetPreview extends Component<Props> {
                 <div className="card-body">
                     <h2 className="mb-0">{metadata.name}</h2>
                     <small>
-                        <a href={metadata.webUri} target="_blank">
+                        <a href={metadata.webUri} target="_blank" rel="noopener noreferrer">
                             <i className="fe fe-home" aria-hidden="true" /> Homepage
                         </a>
                     </small>
