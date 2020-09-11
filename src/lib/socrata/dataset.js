@@ -36,16 +36,6 @@ export class Dataset {
         if (!this.definition.valid) {
             throw new Error('Invalid Dataset URL: Cannot initialize dataset.');
         }
-
-        // An undocumented API endpoint used by Socrata's Foundry websites to check a dataset's backend status. Please
-        // don't break me, Socrata <3
-        //
-        //   e.g. https://data.lacity.org/api/migrations/75vw-v4fk.json
-
-        const url = `https://${this.definition.host}/api/migrations/${this.definition.resource}.json`;
-        const response = await Axios.get(url);
-
-        this.definition.resource = response.data.nbeId;
     }
 
     /**
