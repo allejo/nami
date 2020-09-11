@@ -59,7 +59,7 @@ export default class MapPreview extends Component<Props> {
         return (
             <Map center={center} zoom={12}>
                 <TileLayer
-                    url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
+                    url="https://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 />
 
